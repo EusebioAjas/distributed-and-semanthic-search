@@ -22,12 +22,20 @@ async function getDataFrom(API_URL, fn) {
 }
 
 async function handleSearchBtn() {
-  const result1 = await mapDataSourceFromEuropean();
-  const result2 = await mapDataSourceFromPLOS();
-  const finalResult = result1.concat(result2);
-
-  console.log(finalResult);
-  return finalResult;
+  const data = await getAllData();
+  const sortedData = data.sort(compareScore);
+  let html = '';
+  sortedData.map((item) => {
+    html += renderItem(
+      item.provider,
+      item.title,
+      item.link,
+      item.originalScore,
+      item.normalizedScore
+    );
+  })
+  let container = document.querySelector('.container');
+  container.innerHTML = html;
 }
 
 async function mapDataSourceFromEuropean() {
@@ -71,23 +79,23 @@ function getObjectFromPLOS(item, maxScore) {
 }
 
 async function getAllData() {
-  const datamuse = await getDataFrom(DATAMUSE_URL, fetchResolver);
-  const european = await getDataFrom(EUROPEAN_URL, fetchResolver);
-  const plos = await getDataFrom(PLOS_URL, fetchResolver);
-  const data = await Promise.all([datamuse, european, plos]);
+  const result1 = await mapDataSourceFromEuropean();
+  const result2 = await mapDataSourceFromPLOS();
+  const finalResult = result1.concat(result2);
 
-  return data;
+  return finalResult;
 }
 
-function renderItem(link, provider, originalValue, normalizedValue) {
+function renderItem(provider, title, link, originalValue, normalizedValue) {
   return `<div class="card">
     <p>Provider: ${provider}</p>
+    <p>title: ${title}</p>
     <p><a href="${link}">Link</a></p>
     <p>Original value: ${originalValue}</p>
     <p>normalized value: ${normalizedValue}</p>
   </div>`;
 }
 
-function compareScore(score1, score2) {
-  return score2 - score1;
+function compareScore(obj1, obj2) {
+  return obj2.normalizedScore - obj1.normalizedScore;
 }
