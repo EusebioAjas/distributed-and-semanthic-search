@@ -60,20 +60,20 @@ async function mapDataSourceFromPLOS() {
 
 function getObjectFromEuropean(item, maxScore) {
   let doc = {};
-  doc.link = PLOS_ARTICLE + item.id;
+  doc.link = EUROPEAN_ARTICLE + item.id;
   doc.normalizedScore = item.score / maxScore;
   doc.originalScore = item.score;
-  doc.provider = PLOS;
+  doc.provider = EUROPEAN;
   doc.title = item.title[0];
   return doc;
 }
 
 function getObjectFromPLOS(item, maxScore) {
   let doc = {};
-  doc.link = EUROPEAN_ARTICLE + item.id;
+  doc.link = PLOS_ARTICLE + item.id;
   doc.normalizedScore = item.score / maxScore;
   doc.originalScore = item.score;
-  doc.provider = EUROPEAN;
+  doc.provider = PLOS;
   doc.title = item.title_display;
   return doc;
 }
